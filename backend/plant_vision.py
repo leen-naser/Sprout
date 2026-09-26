@@ -62,8 +62,9 @@ Examples of possible values:
 
     return json.loads(text.strip())
 
-
+def analyze_current_plant(photo_path):
+    return analyze_plant(photo_path)
 
 if __name__ == "__main__":
-    result = analyze_plant("test_images/webcam_test.jpg")
+    result = analyze_current_plant("test_images/basil.jpg")
     print(json.dumps(result, indent=2))
