@@ -3,10 +3,30 @@ from backend.plant_message import generate_plant_message
 from backend.voice import speak
 
 
-plant = get_plant_reading()
+def check_plant():
+    plant = get_plant_reading()
+    message = generate_plant_message(plant)
 
-message = generate_plant_message(plant)
+    plant_data = {
+        "moisture": plant["moisture"]["moisture"],
+        "moisture_status": plant["moisture"]["status"],
 
-print(message)
+        "light": plant["light"]["light"],
+        "light_status": plant["light"]["status"],
 
-speak(message)
+        "temperature": plant["temperature"]["temperature"],
+        "temperature_status": plant["temperature"]["status"],
+
+        "overall_status": plant["overall_status"],
+        "message": message
+    }
+
+    return plant_data
+
+
+if __name__ == "__main__":
+    plant_data = check_plant()
+
+    print(plant_data)
+
+    speak(plant_data["message"])
