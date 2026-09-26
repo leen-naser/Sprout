@@ -1,6 +1,6 @@
-from moisture_sensor import read_moisture
-from light_sensor import read_light
-from temperature_sensor import read_temperature
+from hardware.moisture_sensor import read_moisture
+from hardware.light_sensor import read_light
+from hardware.temperature_sensor import read_temperature
 
 
 def get_plant_reading():
