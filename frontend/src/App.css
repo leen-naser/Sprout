@@ -99,3 +99,24 @@ main {
 .check-button:hover {
   background: #3f683c;
 }
+.message-icon {
+  font-size: 50px;
+  margin-bottom: 10px;
+}
+
+.message-label {
+  margin: 0 0 8px;
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  color: #6f806b;
+}
+
+.plant-message h2 {
+  margin: 0;
+  font-size: 36px;
+}
+
+.plant-message > div:last-child > p:last-child {
+  margin: 8px 0 0;
+}
