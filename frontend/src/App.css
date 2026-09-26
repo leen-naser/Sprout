@@ -1,0 +1,101 @@
+.app {
+  min-height: 100vh;
+  background: #f4f7f0;
+  color: #263326;
+  padding: 40px 20px;
+  font-family: Arial, sans-serif;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.plant-icon {
+  font-size: 60px;
+  margin-bottom: 10px;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 42px;
+  letter-spacing: 3px;
+}
+
+header p {
+  margin-top: 10px;
+  color: #647060;
+  font-size: 18px;
+}
+
+main {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.plant-message {
+  background: white;
+  border-radius: 20px;
+  padding: 30px;
+  text-align: center;
+  margin-bottom: 25px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.plant-message h2 {
+  margin: 0 0 10px;
+  font-size: 32px;
+}
+
+.plant-message p {
+  margin: 0;
+  color: #647060;
+  font-size: 18px;
+}
+
+.readings {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.reading {
+  background: white;
+  border-radius: 16px;
+  padding: 25px 15px;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+}
+
+.reading span {
+  font-size: 30px;
+}
+
+.reading h3 {
+  margin: 10px 0 5px;
+  font-size: 16px;
+}
+
+.reading p {
+  margin: 0;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.check-button {
+  display: block;
+  margin: 0 auto;
+  padding: 16px 30px;
+  border: none;
+  border-radius: 12px;
+  background: #4f7d4b;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.check-button:hover {
+  background: #3f683c;
+}
