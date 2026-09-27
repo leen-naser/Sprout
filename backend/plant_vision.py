@@ -66,5 +66,5 @@ def analyze_current_plant(photo_path):
     return analyze_plant(photo_path)
 
 if __name__ == "__main__":
-    result = analyze_current_plant("test_images/basil.jpg")
+    result = analyze_current_plant("test_images/webcam_test.jpg")
     print(json.dumps(result, indent=2))

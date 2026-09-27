@@ -20,4 +20,4 @@ def capture_plant_photo(output_path, camera_index=0):
 
 
 if __name__ == "__main__":
-    capture_plant_photo("test_images/webcam_test.jpg", camera_index=2)
+    capture_plant_photo("test_images/webcam_test.jpg", camera_index=1)

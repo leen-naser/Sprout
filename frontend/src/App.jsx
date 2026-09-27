@@ -35,7 +35,76 @@ function App() {
     message: 'My soil is getting dry.'
   })
 
+  const [visionData, setVisionData] = useState(null)
   const [isChecking, setIsChecking] = useState(false)
+
+  const checkPlant = async () => {
+    setIsChecking(true)
+
+    try {
+      // Get real sensor data from Raspberry Pi
+      const sensorResponse = await fetch(
+        'http://192.168.137.19:5000/api/plant'
+      )
+
+      const data = await sensorResponse.json()
+
+      setPlantData({
+        moisture: data.moisture,
+        light: data.light_status,
+        temperature: data.temperature,
+        status: getStatusText(data.issues),
+        message: data.message
+      })
+
+      // Capture webcam photo and analyze it
+      try {
+        const visionResponse = await fetch(
+          'http://127.0.0.1:5001/api/vision'
+        )
+
+        if (visionResponse.ok) {
+          const vision = await visionResponse.json()
+          setVisionData(vision)
+        }
+      } catch (visionError) {
+        console.error('Visual check failed:', visionError)
+      }
+
+      // Generate Sprout's voice
+      const voiceResponse = await fetch(
+        'http://127.0.0.1:5001/api/voice',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            message: data.message
+          })
+        }
+      )
+
+      if (!voiceResponse.ok) {
+        throw new Error('Could not generate Sprout voice')
+      }
+
+      // Play ElevenLabs audio through laptop
+      const audioBlob = await voiceResponse.blob()
+      const audioUrl = URL.createObjectURL(audioBlob)
+      const audio = new Audio(audioUrl)
+
+      audio.onended = () => {
+        URL.revokeObjectURL(audioUrl)
+      }
+
+      await audio.play()
+    } catch (error) {
+      console.error('Could not connect to Sprout:', error)
+    }
+
+    setIsChecking(false)
+  }
 
   return (
     <div className="app">
@@ -76,63 +145,32 @@ function App() {
           </div>
         </section>
 
+        {visionData && (
+          <section className="readings">
+            <div className="reading">
+              <span>🍃</span>
+              <h3>Leaves</h3>
+              <p>{visionData.leaf_condition}</p>
+            </div>
+
+            <div className="reading">
+              <span>🎨</span>
+              <h3>Discoloration</h3>
+              <p>{visionData.discoloration}</p>
+            </div>
+
+            <div className="reading">
+              <span>🔍</span>
+              <h3>Visible Issue</h3>
+              <p>{visionData.visible_issue}</p>
+            </div>
+          </section>
+        )}
+
         <button
           className="check-button"
-          onClick={async () => {
-            setIsChecking(true)
-
-            try {
-              // Get real sensor data from the Raspberry Pi
-              const response = await fetch(
-                'http://192.168.137.19:5000/api/plant'
-              )
-
-              const data = await response.json()
-
-              setPlantData({
-                moisture: data.moisture,
-                light: data.light_status,
-                temperature: data.temperature,
-                status: getStatusText(data.issues),
-                message: data.message
-              })
-
-              // Send Sprout's message to ElevenLabs
-              const voiceResponse = await fetch(
-                'http://127.0.0.1:5001/api/voice',
-                {
-                  method: 'POST',
-                  headers: {
-                    'Content-Type': 'application/json'
-                  },
-                  body: JSON.stringify({
-                    message: data.message
-                  })
-                }
-              )
-
-              if (!voiceResponse.ok) {
-                throw new Error('Could not generate Sprout voice')
-              }
-
-              // Play the ElevenLabs audio through the laptop
-              const audioBlob = await voiceResponse.blob()
-              const audioUrl = URL.createObjectURL(audioBlob)
-
-              const audio = new Audio(audioUrl)
-
-              audio.onended = () => {
-                URL.revokeObjectURL(audioUrl)
-              }
-
-              await audio.play()
-
-            } catch (error) {
-              console.error('Could not connect to Sprout:', error)
-            }
-
-            setIsChecking(false)
-          }}
+          onClick={checkPlant}
+          disabled={isChecking}
         >
           {isChecking ? 'CHECKING... 🌱' : 'CHECK ON MY PLANT'}
         </button>
