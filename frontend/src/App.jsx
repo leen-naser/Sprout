@@ -53,20 +53,32 @@ function App() {
 
         <button
           className="check-button"
-          onClick={() => {
+          onClick={async () => {
             setIsChecking(true)
 
-            setTimeout(() => {
+            try {
+              const response = await fetch(
+                'http://192.168.137.19:5000/api/plant'
+              )
+
+              const data = await response.json()
+
               setPlantData({
-                moisture: 18,
-                light: 'Good',
-                temperature: 23.1,
-                status: 'thirsty',
-                message: 'Please give me some water!'
+                moisture: data.moisture,
+                light: data.light_status,
+                temperature: data.temperature,
+                status: data.overall_status,
+                message: data.message
               })
 
-              setIsChecking(false)
-            }, 1000)
+              const speech = new SpeechSynthesisUtterance(data.message)
+              window.speechSynthesis.speak(speech)
+
+            } catch (error) {
+              console.error('Could not connect to Sprout:', error)
+            }
+
+            setIsChecking(false)
           }}
         >
           {isChecking ? 'CHECKING... 🌱' : 'CHECK ON MY PLANT'}
