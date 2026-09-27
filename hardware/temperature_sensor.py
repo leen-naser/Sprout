@@ -9,7 +9,7 @@ def get_temperature_status(temperature):
 
 def read_temperature():
     # Temporary test value until Raspberry Pi sensor is connected
-    temperature = 22.5
+    temperature = 10
 
     return {
         "temperature": temperature,

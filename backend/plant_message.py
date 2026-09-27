@@ -1,32 +1,41 @@
 def generate_plant_message(plant):
-    status = plant["overall_status"]
+    issues = plant["issues"]
 
-    if status == "needs water":
-        return "Hey! I'm feeling pretty thirsty. My soil is dry, but otherwise I'm doing okay. Could you give me some water?"
-
-    elif status == "too wet":
-        return "My soil is a little too wet right now. Please give me some time to dry out."
-
-    elif status == "needs more light":
-        return "It's a little dark over here. Could you move me somewhere with more light?"
-
-    elif status == "too much light":
-        return "I'm getting a little too much light. Could you move me somewhere less bright?"
-
-    elif status == "too cold":
-        return "I'm feeling a little cold. Could you move me somewhere warmer?"
-
-    elif status == "too hot":
-        return "I'm getting too warm. Could you move me somewhere cooler?"
-
-    else:
+    if issues == ["healthy"]:
         return "I'm feeling great! My soil, light, and temperature all look good."
+
+    messages = []
+
+    if "needs water" in issues:
+        messages.append("I'm feeling pretty thirsty because my soil is dry")
+
+    if "too wet" in issues:
+        messages.append("my soil is a little too wet right now")
+
+    if "needs more light" in issues:
+        messages.append("it's a little dark over here")
+
+    if "too much light" in issues:
+        messages.append("I'm getting a little too much light")
+
+    if "too cold" in issues:
+        messages.append("I'm feeling a little cold")
+
+    if "too hot" in issues:
+        messages.append("I'm getting too warm")
+
+    if len(messages) == 1:
+        problem_text = messages[0]
+    else:
+        problem_text = ", ".join(messages[:-1]) + ", and " + messages[-1]
+
+    return "Hey! " + problem_text + ". Could you check on me?"
 
 
 if __name__ == "__main__":
     # Temporary test data
     test_plant = {
-        "overall_status": "needs water"
+        "issues": ["needs water", "needs more light", "too cold"]
     }
 
     message = generate_plant_message(test_plant)

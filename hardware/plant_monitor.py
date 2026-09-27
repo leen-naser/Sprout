@@ -8,26 +8,34 @@ def get_plant_reading():
     light = read_light()
     temperature = read_temperature()
 
+    issues = []
+
     if moisture["status"] == "dry":
-        overall_status = "needs water"
-    elif moisture["status"] == "too wet":
-        overall_status = "too wet"
-    elif light["status"] == "too dark":
-        overall_status = "needs more light"
-    elif light["status"] == "too bright":
-        overall_status = "too much light"
-    elif temperature["status"] == "too cold":
-        overall_status = "too cold"
-    elif temperature["status"] == "too hot":
-        overall_status = "too hot"
-    else:
-        overall_status = "healthy"
+        issues.append("needs water")
+
+    if moisture["status"] == "too wet":
+        issues.append("too wet")
+
+    if light["status"] == "too dark":
+        issues.append("needs more light")
+
+    if light["status"] == "too bright":
+        issues.append("too much light")
+
+    if temperature["status"] == "too cold":
+        issues.append("too cold")
+
+    if temperature["status"] == "too hot":
+        issues.append("too hot")
+
+    if not issues:
+        issues.append("healthy")
 
     return {
         "moisture": moisture,
         "light": light,
         "temperature": temperature,
-        "overall_status": overall_status
+        "issues": issues
     }
 
 
@@ -37,4 +45,4 @@ if __name__ == "__main__":
     print("Moisture:", plant["moisture"])
     print("Light:", plant["light"])
     print("Temperature:", plant["temperature"])
-    print("Overall Plant Status:", plant["overall_status"])
+    print("Plant Issues:", plant["issues"])

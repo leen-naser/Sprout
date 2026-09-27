@@ -9,7 +9,7 @@ def get_light_status(light):
 
 def read_light():
     # Temporary test value until Raspberry Pi sensor is connected
-    light = 65
+    light = 20
 
     return {
         "light": light,

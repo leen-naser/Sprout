@@ -17,7 +17,7 @@ def check_plant():
         "temperature": plant["temperature"]["temperature"],
         "temperature_status": plant["temperature"]["status"],
 
-        "overall_status": plant["overall_status"],
+        "issues": plant["issues"],
         "message": message
     }
 

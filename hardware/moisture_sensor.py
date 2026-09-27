@@ -9,7 +9,7 @@ def get_moisture_status(moisture):
 
 def read_moisture():
     # Temporary test value until Raspberry Pi sensor is connected
-    moisture = 25
+    moisture = 80
 
     return {
         "moisture": moisture,

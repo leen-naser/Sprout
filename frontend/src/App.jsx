@@ -1,12 +1,37 @@
 import { useState } from 'react'
 import './App.css'
 
+function getStatusText(issues) {
+  if (!issues || issues.length === 0) {
+    return 'Please check on me!'
+  }
+
+  if (issues.includes('healthy')) {
+    return "I'm feeling great!"
+  }
+
+  if (issues.length > 1) {
+    return 'Please check on me!'
+  }
+
+  const issue = issues[0]
+
+  if (issue === 'needs water') return "I'm thirsty!"
+  if (issue === 'too wet') return "I'm too wet!"
+  if (issue === 'needs more light') return 'I need more light!'
+  if (issue === 'too much light') return "I'm getting too much light!"
+  if (issue === 'too cold') return "I'm too cold!"
+  if (issue === 'too hot') return "I'm too hot!"
+
+  return 'Please check on me!'
+}
+
 function App() {
   const [plantData, setPlantData] = useState({
     moisture: 24,
     light: 'Good',
     temperature: 22.8,
-    status: 'thirsty',
+    status: "I'm thirsty!",
     message: 'My soil is getting dry.'
   })
 
@@ -26,7 +51,7 @@ function App() {
 
           <div>
             <p className="message-label">SPROUT SAYS...</p>
-            <h2>I'm {plantData.status}!</h2>
+            <h2>{plantData.status}</h2>
             <p>{plantData.message}</p>
           </div>
         </section>
@@ -57,6 +82,7 @@ function App() {
             setIsChecking(true)
 
             try {
+              // Get real sensor data from the Raspberry Pi
               const response = await fetch(
                 'http://192.168.137.19:5000/api/plant'
               )
@@ -67,12 +93,39 @@ function App() {
                 moisture: data.moisture,
                 light: data.light_status,
                 temperature: data.temperature,
-                status: data.overall_status,
+                status: getStatusText(data.issues),
                 message: data.message
               })
 
-              const speech = new SpeechSynthesisUtterance(data.message)
-              window.speechSynthesis.speak(speech)
+              // Send Sprout's message to ElevenLabs
+              const voiceResponse = await fetch(
+                'http://127.0.0.1:5001/api/voice',
+                {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({
+                    message: data.message
+                  })
+                }
+              )
+
+              if (!voiceResponse.ok) {
+                throw new Error('Could not generate Sprout voice')
+              }
+
+              // Play the ElevenLabs audio through the laptop
+              const audioBlob = await voiceResponse.blob()
+              const audioUrl = URL.createObjectURL(audioBlob)
+
+              const audio = new Audio(audioUrl)
+
+              audio.onended = () => {
+                URL.revokeObjectURL(audioUrl)
+              }
+
+              await audio.play()
 
             } catch (error) {
               console.error('Could not connect to Sprout:', error)
